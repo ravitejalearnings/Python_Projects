@@ -23,7 +23,7 @@ st.write(
 st.divider()
 
 # Domain selection
-choose_domain = st.selectbox("Choose Domain", ["Retail", "HR", "Supply Chain"])
+choose_domain = st.selectbox("Choose Domain", ["Retail", "HR", "Supply_Chain"])
 
 # Grid layout for input
 row1 = st.columns(1)
@@ -34,20 +34,21 @@ retail_features = [
     "Product_ID", "Product_Name", "Product_Category", "Product_Subcategory", "Brand",
     "Supplier_ID", "Supplier_Name", "Store_ID", "Store_Name", "Store_Location", "Customer_ID",
     "Customer_Name", "Customer_Age", "Customer_Gender", "Customer_Segment", "Transaction_ID",
-    "Transaction_Date", "Quantity_Sold", "Price"
-]
+    "Transaction_Date", "Quantity_Sold", "Price"]
 
 hr_features = [
     'EmployeeID', 'Name', 'Age', 'Gender', 'MaritalStatus', 'Department', 'JobTitle', 'ManagerID',
     'HireDate', 'YearsInCompany', 'YearsInCurrentRole', 'PreviousCompanyExperience', 'EducationLevel',
-    'Salary', 'WorkLocation'
-]
+    'Salary', 'WorkLocation']
 
-supply_chain_features = [
-    'EmployeeID', 'Name', 'Age', 'Gender', 'MaritalStatus', 'Department', 'JobTitle', 'ManagerID',
-    'HireDate', 'YearsInCompany', 'YearsInCurrentRole', 'PreviousCompanyExperience', 'EducationLevel',
-    'Salary', 'WorkLocation'
-]
+supply_chain_features = ["Order_ID","Customer_ID","Product_ID","Supplier_ID","Warehouse_ID","Shipping_Method","Transporter_Name",
+"Shipment_ID","Destination_Country","Destination_City","Source_Country","Source_City","Product_Category","Product_Subcategory",
+"Order_Channel","Payment_Method","Shipping_Priority","Route_ID","Carrier_ID","Packaging_Type",
+"Order_Status","Shipment_Status",
+"Delivery_Type",  # E.g., Express, Standard
+"Return_Status","Container_Type",  # E.g., Small, Medium, Large
+"SKU",  # Stock Keeping Unit,
+"Distribution_Center_ID"]
 
 
 # Feature selection based on domain
@@ -56,7 +57,7 @@ def domain_features(choose_domain):
         return retail_features
     elif choose_domain == 'HR':
         return hr_features
-    elif choose_domain == 'Supply Chain':
+    elif choose_domain == 'Supply_Chain':
         return supply_chain_features
     return []
 
@@ -64,6 +65,8 @@ if choose_domain == 'Retail':
     min_value, max_value = 100, 50000
 elif choose_domain == 'HR':
     min_value, max_value = 100, 501
+elif choose_domain == 'Supply_Chain':
+    min_value, max_value = 100, 50000
 else:
     # Default case for other domains
     min_value, max_value = 100, 50000
@@ -88,6 +91,21 @@ JobTitle = ['Analyst', 'Consultant', 'Senior Consultant', 'Manager', 'Lead Manag
 WorkLocation = ['Bangalore', 'Noida', 'Chennai', 'Hyderabad', 'Kochi']
 hire_date = datetime.strptime("2002-01-01", "%Y-%m-%d")
 exit_date = datetime.strptime("2024-12-31", "%Y-%m-%d")
+
+# Supply_chain data
+Shipping_Method = ['Air','Ocean','Road']
+Transporter_Name = ['TP1','TP2','TP3','TP4','TP5']
+Source_Country = ['USA','Canada','Germany','India','Japan','Australia','Brazil','China','SA','UK']
+Source_city = ['NY','Toronto','Berlin','Mumbai','Tokyo','Sydney','Paulo','Shanghai','Johannesburg','London']
+Destination_Country = ['France','Italy','Mexico','Russia','Spain','UAE','SK','Singapore','Argentina','Netherlands']
+Destination_city = ['Paris','Rome','Mexico','Moscow','Madrid','Dubai','Seoul','Singapore','Buenos','Amsterdam']
+Product_Categories = ['PC1', 'PC2', 'PC3', 'PC4', 'PC5']
+Product_Subcategories = ['PSC1', 'PSC2', 'PSC3', 'PSC4', 'PSC5']
+Order_Channel = ['Third-party Logistics Partner','Corporate Portal']
+Payment_Method = ['Online','offline']
+Packaging_types = ["Box","Pallet","Drum","Plastic Wrap","Bubble Mailer"]
+Delivery_types = ["Standard","Express","Same-Day"]
+Container_Type = ['Small', 'Medium', 'Large']
 
 
 # Retail data generation
@@ -137,6 +155,38 @@ def generate_hr_data(nrows):
         "WorkLocation": [random.choice(WorkLocation) for _ in range(nrows)]
     }
 
+# Supply chain data generation
+def generate_supply_chain_data(nrows):
+    return{
+        "Order_ID":[fake.numerify(text = "########") for _ in range(nrows)],
+        "Customer_ID": [fake.bothify(text = "#?#?#?#?") for _ in range(nrows)],
+        "Product_ID": [fake.bothify(text = "#?#?#?#?") for _ in range(nrows)],
+        "Supplier_ID": [fake.bothify(text = "#?#?#?#?") for _ in range(nrows)],
+        "Warehouse_ID": [fake.bothify(text = "#?#?#?#?") for _ in range(nrows)],
+        "Shipping_Method": [random.choice(Shipping_Method) for _ in range(nrows)],
+        "Transporter_Name": [random.choice(Transporter_Name) for _ in range(nrows)],
+        "Shipment_ID":[fake.bothify(text = "#?#?#?#?") for _ in range(nrows)],
+        "Destination_Country": [random.choice(Destination_Country) for _ in range(nrows)],
+        "Destination_City": [random.choice(Destination_city) for _ in range(nrows)],
+        "Source_Country": [random.choice(Source_Country) for _ in range(nrows)],
+        "Source_City": [random.choice(Source_city) for _ in range(nrows)],
+        "Product_Category": [random.choice(Product_Categories) for _ in range(nrows)],
+        "Product_Subcategory": [random.choice(Product_Subcategories) for _ in range(nrows)],
+        "Order_Channel": [random.choice(Order_Channel) for _ in range(nrows)],
+        "Payment_Method":[random.choice([Payment_Method]) for _ in range(nrows)],
+        "Shipping_Priority": [random.choice(['Y','N']) for _ in range(nrows)],
+        "Route_ID": [fake.bothify(text = "000#?#?#?#?") for _ in range(nrows)],
+        "Carrier_ID": [fake.bothify(text = "CA?#?#?") for _ in range(nrows)],
+        "Packaging_Type": [random.choice(Packaging_types) for _ in range(nrows)],
+        "Order_Status": [random.choice(['Y','N']) for _ in range(nrows)],
+        "Shipment_Status": [random.choice(['Y','N']) for _ in range(nrows)],
+        "Delivery_Type": [random.choice(Delivery_types) for _ in range(nrows)],
+        "Return_Status": [random.choice(['Y','N']) for _ in range(nrows)],
+        "Container_Type": [random.choice(Container_Type) for _ in range(nrows)],
+        "SKU": [fake.bothify(text = "SKU#?#?#?#?") for _ in range(nrows)],
+        "Distribution_Center_ID": [fake.numerify(text = "#######") for _ in range(nrows)]
+    }
+
 
 # Generate data based on selected domain
 if choose_domain == 'Retail':
@@ -148,7 +198,9 @@ elif choose_domain == 'HR':
     st.write("HR Data Preview")
     st.write(hr_data_df[selected_features].head() if selected_features else hr_data_df.head())
 else:
-    st.write("Supply Chain Data preview is not implemented yet.")
+    Supply_chain_data_df = pd.DataFrame(generate_supply_chain_data(nrows))
+    st.write("Supply Chain Data Preview")
+    st.write(Supply_chain_data_df[selected_features].head() if selected_features else Supply_chain_data_df.head())
 
 # Download option
 st.divider()
@@ -184,5 +236,20 @@ elif choose_domain == 'HR':
             file_name='hr_data_full.csv',
             mime='text/csv'
         )
+elif choose_domain == 'Supply_Chain':
+    if selected_features:
+        st.download_button(
+            label='Download Supply Chain Data CSV',
+            data=Supply_chain_data_df[selected_features].to_csv(index=False),
+            file_name='Supply_chain_data.csv',
+            mime='text/csv'
+        )
+    else:  # If no features are selected, download the entire HR dataset
+        st.download_button(
+            label='Download Full Supply Chain CSV',
+            data=Supply_chain_data_df.to_csv(index=False),
+            file_name='Supply_Chain_data_full.csv',
+            mime='text/csv'
+        )
 else:
-    st.write("Please select features before downloading the data.")
+    None
