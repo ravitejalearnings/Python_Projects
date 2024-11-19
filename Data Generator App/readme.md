@@ -20,7 +20,8 @@ Additionally, the generated datasets can be seamlessly integrated into various B
 ## Supported Domains
 1. **Retail**
 2. **HR**
-3. **Supply Chain**
+3. **Supply Chain(coming soon)**
+4. **Other domains(coming soon)**
 
 ---
 
