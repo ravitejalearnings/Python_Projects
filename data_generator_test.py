@@ -7,8 +7,8 @@ from datetime import datetime
 from random import randint
 
 # Initialize the Faker generator for 'en_IN' locale
-fake = Faker('en_IN')
-
+fake = Faker()
+# 'en_IN'
 # Title of the app
 st.title("Synthetic Data Generator")
 st.divider()
@@ -73,8 +73,45 @@ else:
 
 # Input: Number of rows and feature selection
 with row1[0]:
-    end_date = datetime.strptime("2024-12-31", "%Y-%m-%d")
+    nrows = st.number_input("Choose N rows", min_value=min_value, max_value=max_value, step=1)
+with row2[0]:
+    selected_features = st.multiselect("Choose Columns", domain_features(choose_domain))
 
+# Predefined lists for domain-specific data
+products = ['Product1', 'Product2', 'Product3']
+Product_Categories = ['PC1', 'PC2', 'PC3', 'PC4', 'PC5']
+Product_Subcategories = ['PSC1', 'PSC2', 'PSC3', 'PSC4', 'PSC5']
+Brands = ['Brand1', 'Brand2', 'Brand3', 'Brand4', 'Brand5']
+Supplier_names = ['Supplier1', 'Supplier2', 'Supplier3', 'Supplier4', 'Supplier5']
+Store_Names = ['Store1', 'Store2', 'Store3', 'Store4', 'Store5']
+
+# HR domain data
+Department = ['BA', 'BI', 'Ops', 'DE', 'DS', 'Finance', 'DevOps']
+JobTitle = ['Analyst', 'Consultant', 'Senior Consultant', 'Manager', 'Lead Manager', 'DoD']
+WorkLocation = ['Bangalore', 'Noida', 'Chennai', 'Hyderabad', 'Kochi']
+hire_date = datetime.strptime("2002-01-01", "%Y-%m-%d")
+exit_date = datetime.strptime("2024-12-31", "%Y-%m-%d")
+
+# Supply_chain data
+Shipping_Method = ['Air','Ocean','Road']
+Transporter_Name = ['TP1','TP2','TP3','TP4','TP5']
+Source_Country = ['USA','Canada','Germany','India','Japan','Australia','Brazil','China','SA','UK']
+Source_city = ['NY','Toronto','Berlin','Mumbai','Tokyo','Sydney','Paulo','Shanghai','Johannesburg','London']
+Destination_Country = ['France','Italy','Mexico','Russia','Spain','UAE','SK','Singapore','Argentina','Netherlands']
+Destination_city = ['Paris','Rome','Mexico','Moscow','Madrid','Dubai','Seoul','Singapore','Buenos','Amsterdam']
+Product_Categories = ['PC1', 'PC2', 'PC3', 'PC4', 'PC5']
+Product_Subcategories = ['PSC1', 'PSC2', 'PSC3', 'PSC4', 'PSC5']
+Order_Channel = ['Third-party Logistics Partner','Corporate Portal']
+Payment_Method = ['Online','offline']
+Packaging_types = ["Box","Pallet","Drum","Plastic Wrap","Bubble Mailer"]
+Delivery_types = ["Standard","Express","Same-Day"]
+Container_Type = ['Small', 'Medium', 'Large']
+
+
+# Retail data generation
+start_date = datetime.strptime("2022-01-01", "%Y-%m-%d")
+end_date = datetime.strptime("2024-12-31", "%Y-%m-%d")
+def generate_retail_data(nrows):
     return {
         "Product_ID": [fake.numerify(text='#######') for _ in range(nrows)],
         "Product_Name": [random.choice(products) for _ in range(nrows)],
