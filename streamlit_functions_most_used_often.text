@@ -1,1 +1,19 @@
+import streamlit as st
 
+st.write()      --> acts a=like print statement
+st.title()      --> proivde title
+st.header()    --> provide header
+st.subheader()  --> provide subheader
+st.divider()    --> line divider
+st.text()      --> provide text
+st.button()    --> dynamic button to view results  
+st.dataframe() --> converts to dataframe
+st.markdown()  --> used markdown sentences
+st.session_state() --> used to store values
+st.columns() --> generates columns
+st.selectbox() --> acts like a filter
+st.multiselect() --> multiple filters
+st.progessbar() 
+st.sidebar()
+with
+st.download_button()  --> click to download results
