@@ -101,11 +101,13 @@ for table_name in st.session_state.tables.keys():
                     f"Max  ({col['name']})", value=col["max"], step=1, key=f"max_{table_name}_{i}")
         elif col["dtype"] == "date":
             with col5:
-                col["start_date"] = st.date_input(
+                start_date =st.date_input(
                     f"Start Date ({col['name']})", key=f"start_date_{table_name}_{i}")
+                col["start_date"] = start_date
             with col6:
-                col["end_date"] = st.date_input(
+                end_date = st.date_input(
                     f"End Date ({col['name']})", key=f"end_date_{table_name}_{i}")
+                col["end_date"] = end_date
     st.divider()
 
 # Generate Fake Data Section
@@ -127,7 +129,7 @@ if st.button("Click to View Synthetic Data"):
                 elif col["dtype"] == "float":
                     row[col["name"]] = round(faker.random.uniform(col.get("min", 0), col.get("max", 100)), 2)
                 elif col["dtype"] == "date":
-                    row[col["name"]] = faker.date_this_century()
+                    row[col["name"]] = faker.date_between(start_date=start_date, end_date=end_date)
                 elif col["dtype"] == "alphanumeric":
                     row[col["name"]] = faker.bothify(text="??##")
                 elif col["dtype"] == "address":
