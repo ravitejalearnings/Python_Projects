@@ -83,22 +83,29 @@ for table_name in st.session_state.tables.keys():
 
     # Column Configuration
     for i, col in enumerate(st.session_state.tables[table_name]["columns"]):
-        col1, col2, col3, col4 = st.columns([3, 3, 2, 2])
+        col1, col2, col3, col4,col5, col6 = st.columns([2, 2, 2, 2, 3, 3])
         with col1:
-            col["name"] = st.text_input(f"Column Name ({new_name})", value=col["name"], key=f"{table_name}_col_name_{i}")
+            col["name"] = st.text_input(f"Cols({new_name})", value=col["name"], key=f"{table_name}_col_name_{i}")
         with col2:
             col["dtype"] = st.selectbox(
-                "Data Type", diff_formats,
+                "Format", diff_formats,
                 index=diff_formats.index(col["dtype"]),
                 key=f"{table_name}_col_dtype_{i}",
             )
         if col["dtype"] in ["number", "float", "ratings", "age"]:
             with col3:
                 col["min"] = st.number_input(
-                    f"Min Value ({col['name']})", value=col["min"], step=1, key=f"min_{table_name}_{i}")
+                    f"Min ({col['name']})", value=col["min"], step=1, key=f"min_{table_name}_{i}")
             with col4:
                 col["max"] = st.number_input(
-                    f"Max Value ({col['name']})", value=col["max"], step=1, key=f"max_{table_name}_{i}")
+                    f"Max  ({col['name']})", value=col["max"], step=1, key=f"max_{table_name}_{i}")
+        elif col["dtype"] == "date":
+            with col5:
+                col["start_date"] = st.date_input(
+                    f"Start Date ({col['name']})", key=f"start_date_{table_name}_{i}")
+            with col6:
+                col["end_date"] = st.date_input(
+                    f"End Date ({col['name']})", key=f"end_date_{table_name}_{i}")
     st.divider()
 
 # Generate Fake Data Section
@@ -159,6 +166,8 @@ if st.button("Click to View Synthetic Data"):
             fake_data.append(row)
 
         st.session_state.tables[table_id]["data"] = pd.DataFrame(fake_data)
+        df = pd.DataFrame(fake_data)
+        st.dataframe(df.head())
 
     st.success("Synthetic data generated for all tables!")
 st.divider()
