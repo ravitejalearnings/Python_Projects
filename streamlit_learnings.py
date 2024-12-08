@@ -97,7 +97,7 @@ digraph {
 st.divider()
 
 st.header("Insert Images")
-st.image(r"C:\Users\aravit01\Downloads\Used-Car-Prices.jpg", width=500)
+# st.image(r"C:\Users\aravit01\Downloads\Used-Car-Prices.jpg", width=500)
 st.divider()
 
 st.header("Insert Video")
