@@ -31,7 +31,8 @@ def generate_synthetic_data(table_config):
             elif col["dtype"] == "index":
                 row[col["name"]] = row_index
             elif col["dtype"] == "name":
-                row[col["name"]] = faker.name()
+                name = faker.name()
+                row[col["name"]] = name
             elif col["dtype"] == "number":
                 row[col["name"]] = faker.random_int(
                     min=int(col.get("min", 0)), max=int(col.get("max", 100))
@@ -55,7 +56,7 @@ def generate_synthetic_data(table_config):
             elif col["dtype"] == "city":
                 row[col["name"]] = faker.city()
             elif col["dtype"] == "email":
-                name_parts = faker.name().lower().replace(".", "").split()
+                name_parts = name.lower().replace(".", "").split()
                 row[col["name"]] = f"{name_parts[0]}.{name_parts[-1]}@domain.com"
         fake_data.append(row)
 
@@ -64,7 +65,7 @@ def generate_synthetic_data(table_config):
 
 def validate_table_config(table_config):
     for col in table_config["columns"]:
-        if not col["nullable"] and col["dtype"] in ["contains"]:
+        if not col["nullable"] and col["dtype"] in ["contains", "custom"]:
             custom_values = [value.strip() for value in col.get("custom_values", "").split(",") if value.strip()]
             if not custom_values and col["dtype"] == "contains":
                 st.error(f"Error: Column '{col['name']}' must have valid values or be nullable.")
@@ -101,7 +102,6 @@ def prepare_config_for_saving(tables):
 
 # Title
 st.title("🛠️ Synthetic Data Generator")
-
 # Toggle Show/Hide Description
 if "show_description" not in st.session_state:
     st.session_state.show_description = True
@@ -136,7 +136,6 @@ if st.session_state.show_description:
     You can load a previously saved configuration file via the sidebar to quickly restore your settings.
     """)
     st.divider()
-
 # Save and Load Configuration
 st.sidebar.title("🔄 Save and Load Configuration")
 if st.sidebar.button("Save Configuration"):
@@ -194,11 +193,28 @@ for table_name, table_config in st.session_state.tables.items():
         with col1:
             col["name"] = st.text_input(f"Column Name", value=col["name"], key=f"{table_name}_col_name_{i}")
         with col2:
-            col["dtype"] = st.selectbox("Data Type", ["number", "float", "date", "name", "city", "email", "contains", "index"], index=0, key=f"{table_name}_col_dtype_{i}")
+            col["dtype"] = st.selectbox(
+                "Data Type",
+                ["number", "float", "date", "name", "city", "email", "contains", "index"],
+                index=0,
+                key=f"{table_name}_col_dtype_{i}",
+            )
         with col3:
-            col["nullable"] = st.checkbox("Nullable", value=col.get("nullable", False), key=f"{table_name}_nullable_{i}")
+            col["nullable"] = st.checkbox(
+                "Nullable",
+                value=col.get("nullable", False),
+                key=f"{table_name}_nullable_{i}",
+                disabled=(col["dtype"] == "index"),  # Disable for Index format
+            )
         with col4:
-            col["null_percentage"] = st.slider("Null %", 0, 100, value=int(col.get("null_percentage", 0)), key=f"{table_name}_null_percentage_{i}")
+            col["null_percentage"] = st.slider(
+                "Null %",
+                0,
+                100,
+                value=int(col.get("null_percentage", 0)),
+                key=f"{table_name}_null_percentage_{i}",
+                disabled=(col["dtype"] == "index"),  # Disable for Index format
+            )
 
         # Additional Config
         if col["dtype"] in ["number", "float"]:
@@ -228,7 +244,10 @@ if st.button("Generate Data"):
             st.session_state.tables[table_name]["data"] = generate_synthetic_data(table_config)
             st.success(f"Data generated for table `{table_config.get('name', table_name)}`!")
             st.markdown(f"**Preview of `{table_config.get('name', table_name)}`:**")
-            st.dataframe(st.session_state.tables[table_name]["data"].head(10))
+
+            # Display the preview
+            df = st.session_state.tables[table_name]["data"]
+            st.dataframe(df.reset_index(drop=True))  # Remove index column
 
 # Download Data
 st.subheader("⏬ Download Data")
